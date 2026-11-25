@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OffCams: Off-Campus Activity Monitoring
 
-## Getting Started
+Next.js 15 + shadcn/ui + Tailwind 4 + Mapbox. Students log off-campus trips with daily itineraries and check in with GPS, time and a photo. VPSAS staff see a live map of delegates, ongoing activities, and a breakdown per college and department. XP, levels, streaks, badges and a college leaderboard make check-ins a game.
 
-First, run the development server:
+## Pages
+- `/` role picker
+- `/student` profile, active trip, itinerary (paste-to-import), check-in (GPS + camera), XP/badges/leaderboard
+- `/staff` passcode gate, KPIs, live Mapbox map, live feed, ongoing activities, by college/department, delegates table
 
+## Run locally
 ```bash
+npm install
+cp .env.example .env.local   # fill in what you have
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm test                     # itinerary parser test
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Modes
+- **Demo (no env vars):** sample data in the browser's localStorage. Syncs between tabs only. Good for a walkthrough.
+- **Live (Supabase env vars set):** shared database, photo storage and real-time updates. Run `supabase/schema.sql` in your Supabase project first.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy
+**Vercel:** import the repo, add the env vars from `.env.example`, deploy. No other config.
+**Netlify:** import the repo, Netlify detects Next.js (`netlify.toml` included), add the same env vars, deploy.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+GPS and camera need HTTPS, which both hosts provide.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Before real use
+- Replace the shared staff passcode and open Supabase policies with Supabase Auth accounts.
+- Replace the placeholder college/department list in `src/lib/colleges.ts`.
