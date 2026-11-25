@@ -102,7 +102,7 @@ function StaffDashboard() {
   const attention = rows.filter((r) => r.stale);
   const feed = db.checkins.filter((c) => rows.some((r) => r.s.id === c.studentId && r.trip.id === c.tripId))
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 25);
-  const depts = COLLEGES.find((c) => c.code === college)?.departments ?? [];
+  const depts = [...new Set(db.students.filter((s) => s.college === college).map((s) => s.department))].sort();
 
   return (
     <main className="mx-auto max-w-7xl px-4 pb-16 pt-4">
@@ -297,7 +297,7 @@ function CollegeBreakdown({ rows }: { rows: Row[] }) {
   const data = COLLEGES.map((c) => {
     const rs = rows.filter((r) => r.s.college === c.code);
     const delegates = new Set(rs.map((r) => r.s.id)).size;
-    const depts = c.departments.map((d) => ({ d, n: new Set(rs.filter((r) => r.s.department === d).map((r) => r.s.id)).size, stale: rs.filter((r) => r.s.department === d && r.stale).length })).filter((x) => x.n > 0);
+    const depts = [...new Set(rs.map((r) => r.s.department))].sort().map((d) => ({ d, n: new Set(rs.filter((r) => r.s.department === d).map((r) => r.s.id)).size, stale: rs.filter((r) => r.s.department === d && r.stale).length })).filter((x) => x.n > 0);
     const places = [...new Set(rs.map((r) => r.trip.destination))];
     return { c, delegates, depts, places, stale: rs.filter((r) => r.stale).length };
   }).filter((x) => x.delegates > 0);

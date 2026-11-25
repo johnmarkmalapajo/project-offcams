@@ -41,8 +41,8 @@ function Onboarding() {
   const [dept, setDept] = React.useState("");
   const depts = COLLEGES.find((c) => c.code === college)?.departments ?? [];
   const submit = async () => {
-    if (!name.trim() || !no.trim() || !college || !dept) return toast.error("Please complete all fields");
-    try { await register({ name: name.trim(), studentNo: no.trim(), college, department: dept }); }
+    if (!name.trim() || !no.trim() || !college || !dept.trim()) return toast.error("Please complete all fields");
+    try { await register({ name: name.trim(), studentNo: no.trim(), college, department: dept.trim() }); }
     catch (e) { return toast.error("Couldn’t save your profile", { description: (e as Error)?.message }); }
     celebrate(); toast.success(`Welcome, ${name.split(" ")[0]}`);
   };
@@ -62,10 +62,8 @@ function Onboarding() {
               </Select>
             </div>
             <div className="grid gap-1.5"><Label>Department / Program</Label>
-              <Select value={dept} onValueChange={setDept} disabled={!college}>
-                <SelectTrigger><SelectValue placeholder="Select department" /></SelectTrigger>
-                <SelectContent>{depts.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
-              </Select>
+              <Input value={dept} onChange={(e) => setDept(e.target.value)} disabled={!college} list="dept-options" placeholder={college ? "e.g. Computer Science" : "Select a college first"} />
+              <datalist id="dept-options">{depts.map((d) => <option key={d} value={d} />)}</datalist>
             </div>
             <Button size="lg" className="mt-2" onClick={submit}>Continue</Button>
           </CardContent>

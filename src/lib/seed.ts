@@ -27,18 +27,18 @@ export const PLACES = {
 export function makeSeed(): DB {
   const today = new Date();
   const students: Student[] = [
-    S("s1", "Juan Dela Cruz", "2023-00123", "CEIT", "Computer Science"),
-    S("s2", "Maria Santos", "2023-00456", "CEIT", "Information Technology"),
-    S("s3", "Paolo Reyes", "2022-01187", "CEIT", "Computer Engineering"),
-    S("s4", "Angela Lim", "2024-00311", "CAS", "Mathematics"),
-    S("s5", "Kevin Ramos", "2022-00992", "CBA", "Entrepreneurship"),
-    S("s6", "Bea Villanueva", "2023-01540", "CON", "Nursing"),
-    S("s7", "Carlo Mendoza", "2023-01612", "CON", "Nursing"),
-    S("s8", "Ella Navarro", "2022-00777", "CON", "Medical Technology"),
-    S("s9", "Rafael Cruz", "2021-00451", "CBA", "Accountancy"),
-    S("s10", "Sofia Garcia", "2021-00510", "CBA", "Accountancy"),
+    S("s1", "Juan Dela Cruz", "2023-00123", "CICS", "Computer Science"),
+    S("s2", "Maria Santos", "2023-00456", "CICS", "Information Technology"),
+    S("s3", "Paolo Reyes", "2022-01187", "COE", "Computer Engineering"),
+    S("s4", "Angela Lim", "2024-00311", "CED", "Secondary Education"),
+    S("s5", "Kevin Ramos", "2022-00992", "COE", "Civil Engineering"),
+    S("s6", "Bea Villanueva", "2023-01540", "COE", "Electrical Engineering"),
+    S("s7", "Carlo Mendoza", "2023-01612", "COE", "Electrical Engineering"),
+    S("s8", "Ella Navarro", "2022-00777", "COE", "Mechanical Engineering"),
+    S("s9", "Rafael Cruz", "2021-00451", "CICS", "Information Systems"),
+    S("s10", "Sofia Garcia", "2021-00510", "CICS", "Information Systems"),
     S("s11", "Miguel Torres", "2024-00801", "CED", "Secondary Education"),
-    S("s12", "Liza Bautista", "2023-00999", "CAS", "Communication"),
+    S("s12", "Liza Bautista", "2023-00999", "CED", "Elementary Education"),
   ];
 
   const rel = (n: number) => ymd(addDays(today, n));
@@ -57,7 +57,7 @@ export function makeSeed(): DB {
       delegateIds: ["s1", "s2", "s3", "s4", "s5", "s12"], createdBy: "s1", createdAt: new Date().toISOString(),
     },
     {
-      id: "t2", code: "NURSE4", title: "Regional Nursing Skills Olympics", destination: "Davao City",
+      id: "t2", code: "NURSE4", title: "Regional Engineering Skills Olympics", destination: "Davao City",
       ingress: rel(-1), egress: rel(1),
       days: [
         { day: 1, date: rel(-1), legs: [leg("m1", "Campus", "Davao City (Hotel)")] },
@@ -67,7 +67,7 @@ export function makeSeed(): DB {
       delegateIds: ["s6", "s7", "s8"], createdBy: "s6", createdAt: new Date().toISOString(),
     },
     {
-      id: "t3", code: "CPA777", title: "Accountancy Mock Board Review", destination: "Cebu City",
+      id: "t3", code: "CPA777", title: "Regional IT Quiz Bee", destination: "Cebu City",
       ingress: rel(5), egress: rel(7),
       days: [
         { day: 1, date: rel(5), legs: [leg("n1", "Campus", "Cebu City")] },
