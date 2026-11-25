@@ -88,7 +88,7 @@ class SupabaseBackend implements Backend {
     let photoUrl: string | undefined;
     if (photo) {
       const path = `${c.tripId}/${c.studentId}/${c.id}.jpg`;
-      const up = await this.sb.storage.from(BUCKET).upload(path, photo, { contentType: "image/jpeg", upsert: true });
+      const up = await this.sb.storage.from(BUCKET).upload(path, photo, { contentType: "image/jpeg" });
       if (up.error) throw up.error;
       photoUrl = this.sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
     }
