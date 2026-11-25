@@ -34,3 +34,8 @@ create policy "open update trips" on trips for update using (true);
 create policy "open read checkins" on checkins for select using (true);
 create policy "open insert checkins" on checkins for insert with check (true);
 create policy "open upload photos" on storage.objects for insert with check (bucket_id = 'checkin-photos');
+
+-- Newer Supabase projects don't grant table access to the API roles automatically.
+grant usage on schema public to anon, authenticated;
+grant select, insert, update on students, trips to anon, authenticated;
+grant select, insert on checkins to anon, authenticated;
