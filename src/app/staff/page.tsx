@@ -33,7 +33,7 @@ export default function StaffPage() {
 }
 
 function StaffGate() {
-  const { staffLogin } = useStore();
+  const { staffLogin, backend } = useStore();
   const [pass, setPass] = React.useState("");
   const [shake, setShake] = React.useState(0);
   return (
@@ -43,7 +43,7 @@ function StaffGate() {
           <CardHeader className="text-center">
             <div className="mx-auto grid size-11 place-items-center rounded-lg border bg-muted"><ShieldCheck className="size-5" /></div>
             <CardTitle className="mt-2 text-lg tracking-tight">VPSAS staff access</CardTitle>
-            <CardDescription>Enter the staff passcode. (Demo passcode: <code>vpsas2026</code>)</CardDescription>
+            <CardDescription>Enter the staff passcode.{backend === "demo" && <> (Demo passcode: <code>vpsas2026</code>)</>}</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3">
             <Input type="password" value={pass} onChange={(e) => setPass(e.target.value)} placeholder="Passcode" onKeyDown={(e) => e.key === "Enter" && (staffLogin(pass) || (setShake((s) => s + 1), toast.error("Wrong passcode")))} />

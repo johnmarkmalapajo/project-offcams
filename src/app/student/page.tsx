@@ -34,7 +34,7 @@ export default function StudentPage() {
 }
 
 function Onboarding() {
-  const { register, db, signInAs } = useStore();
+  const { register, db, signInAs, backend } = useStore();
   const [name, setName] = React.useState("");
   const [no, setNo] = React.useState("");
   const [college, setCollege] = React.useState("");
@@ -69,7 +69,7 @@ function Onboarding() {
           </CardContent>
         </Card>
       </motion.div>
-      {db.students.length > 0 && (
+      {backend === "demo" && db.students.length > 0 && (
         <div className="mt-6">
           <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Demo: continue as a sample student</div>
           <div className="flex flex-wrap gap-2">
