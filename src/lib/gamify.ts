@@ -6,7 +6,7 @@ export const XP = { checkin: 50, photo: 20, note: 5, firstOfDay: 25, createTrip:
 const XP_PER_LEVEL = 250;
 const TITLES = ["Campus Rookie", "Wayfinder", "Trailblazer", "Road Scholar", "Globetrotter", "Delegate Legend"];
 
-export type Badge = { id: string; name: string; emoji: string; desc: string; earned: boolean };
+export type Badge = { id: string; name: string; desc: string; earned: boolean };
 
 export function studentStats(studentId: string, db: DB) {
   const mine = db.checkins.filter((c) => c.studentId === studentId).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
@@ -44,15 +44,15 @@ export function studentStats(studentId: string, db: DB) {
   });
 
   const badges: Badge[] = [
-    { id: "first", name: "First Steps", emoji: "👣", desc: "Make your first check-in", earned: mine.length >= 1 },
-    { id: "shutter", name: "Shutterbug", emoji: "📸", desc: "5 check-ins with photo proof", earned: mine.filter((c) => c.photo).length >= 5 },
-    { id: "early", name: "Early Bird", emoji: "🌅", desc: "Check in before 7:00 AM", earned: hours.some((h) => h < 7) },
-    { id: "owl", name: "Night Owl", emoji: "🦉", desc: "Check in after 9:00 PM", earned: hours.some((h) => h >= 21) },
-    { id: "streak3", name: "On Fire", emoji: "🔥", desc: "3-day check-in streak", earned: streak >= 3 },
-    { id: "perfect", name: "Perfect Attendance", emoji: "🏅", desc: "Check in every day of a trip", earned: perfect },
-    { id: "planner", name: "Master Planner", emoji: "🗺️", desc: "Create a trip with 4+ itinerary legs", earned: created.some((t) => t.days.reduce((n, d) => n + d.legs.length, 0) >= 4) },
-    { id: "explorer", name: "Explorer", emoji: "🧭", desc: "Join trips to 3 different places", earned: new Set(trips.map((t) => t.destination.toLowerCase())).size >= 3 },
-    { id: "squad", name: "Squad Goals", emoji: "🤝", desc: "Be on a trip with 3+ delegates", earned: trips.some((t) => t.delegateIds.length >= 3) },
+    { id: "first", name: "First Steps", desc: "Make your first check-in", earned: mine.length >= 1 },
+    { id: "shutter", name: "Shutterbug", desc: "5 check-ins with photo proof", earned: mine.filter((c) => c.photo).length >= 5 },
+    { id: "early", name: "Early Bird", desc: "Check in before 7:00 AM", earned: hours.some((h) => h < 7) },
+    { id: "owl", name: "Night Owl", desc: "Check in after 9:00 PM", earned: hours.some((h) => h >= 21) },
+    { id: "streak3", name: "On Fire", desc: "3-day check-in streak", earned: streak >= 3 },
+    { id: "perfect", name: "Perfect Attendance", desc: "Check in every day of a trip", earned: perfect },
+    { id: "planner", name: "Master Planner", desc: "Create a trip with 4+ itinerary legs", earned: created.some((t) => t.days.reduce((n, d) => n + d.legs.length, 0) >= 4) },
+    { id: "explorer", name: "Explorer", desc: "Join trips to 3 different places", earned: new Set(trips.map((t) => t.destination.toLowerCase())).size >= 3 },
+    { id: "squad", name: "Squad Goals", desc: "Be on a trip with 3+ delegates", earned: trips.some((t) => t.delegateIds.length >= 3) },
   ];
 
   return { xp, level, title, into, perLevel: XP_PER_LEVEL, streak, badges, checkins: mine.length, trips: trips.length };

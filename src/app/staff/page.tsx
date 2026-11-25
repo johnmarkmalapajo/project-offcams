@@ -2,7 +2,7 @@
 import * as React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { formatDistanceToNow, format } from "date-fns";
-import { Activity, AlertTriangle, Building2, LogOut, MapPin, Radio, RotateCcw, ShieldCheck, Users, Search, Layers, Trophy, Table2 } from "lucide-react";
+import { Activity, AlertTriangle, Building2, LogOut, MapPin, RotateCcw, ShieldCheck, Users, Search, Layers, Trophy, Table2 } from "lucide-react";
 import { toast } from "sonner";
 import { useStore } from "@/lib/store";
 import { Logo } from "@/components/logo";
@@ -17,6 +17,7 @@ import { LiveMap, type MapPoint } from "@/components/map/live-map";
 import { Avatar, initials } from "@/components/itinerary";
 import { Leaderboard } from "@/components/leaderboard";
 import { CountUp } from "@/components/gamify";
+import { LiveDot } from "@/components/live-dot";
 import { COLLEGES, collegeColor } from "@/lib/colleges";
 import { shortDate, todayYmd, tripDayIndex, tripStatus, ymd } from "@/lib/dates";
 import { hoursSince } from "@/lib/gamify";
@@ -40,8 +41,8 @@ function StaffGate() {
       <motion.div key={shake} animate={shake ? { x: [0, -12, 12, -8, 8, 0] } : {}} className="w-full">
         <Card>
           <CardHeader className="text-center">
-            <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-500 text-white shadow-lg"><ShieldCheck className="size-7" /></div>
-            <CardTitle className="mt-2 text-xl">VPSAS Staff Access</CardTitle>
+            <div className="mx-auto grid size-11 place-items-center rounded-lg border bg-muted"><ShieldCheck className="size-5" /></div>
+            <CardTitle className="mt-2 text-lg tracking-tight">VPSAS staff access</CardTitle>
             <CardDescription>Enter the staff passcode. (Demo passcode: <code>vpsas2026</code>)</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3">
@@ -109,10 +110,8 @@ function StaffDashboard() {
         <div className="flex items-center gap-3">
           <Logo />
           <Badge variant="outline" className="gap-1.5">
-            <motion.span key={lastEventAt} initial={{ scale: 2 }} animate={{ scale: 1 }} className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-500 opacity-75" /><span className="relative inline-flex size-2 rounded-full bg-red-500" />
-            </motion.span>
-            LIVE · {backend === "supabase" ? "Realtime" : "Demo data"}
+            <motion.span key={lastEventAt} initial={{ scale: 2 }} animate={{ scale: 1 }}><LiveDot /></motion.span>
+            <span className="font-mono text-[10px] uppercase tracking-wider">{backend === "supabase" ? "Live" : "Demo data"}</span>
           </Badge>
         </div>
         <div className="flex gap-1">
@@ -121,15 +120,15 @@ function StaffDashboard() {
         </div>
       </header>
 
-      <h1 className="mt-4 text-2xl font-extrabold sm:text-3xl">VPSAS Delegate Monitor</h1>
-      <p className="text-sm text-muted-foreground">{format(new Date(), "EEEE, MMMM d, yyyy")}</p>
+      <h1 className="mt-6 text-2xl font-semibold tracking-tight sm:text-3xl">Delegate monitor</h1>
+      <p className="text-sm text-muted-foreground">VPSAS · {format(new Date(), "EEEE, MMMM d, yyyy")}</p>
 
       {/* KPIs */}
-      <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Kpi icon={<Activity />} label="Ongoing activities" value={ongoing.length} tone="from-indigo-500 to-violet-500" />
-        <Kpi icon={<Users />} label="Delegates off campus" value={delegatesOut} tone="from-sky-500 to-cyan-500" />
-        <Kpi icon={<MapPin />} label="Check-ins today" value={todayCount} tone="from-emerald-500 to-teal-500" />
-        <Kpi icon={<AlertTriangle />} label={`No check-in > ${STALE_HOURS}h`} value={attention.length} tone="from-amber-500 to-red-500" pulse={attention.length > 0} />
+      <div className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-xl border bg-border lg:grid-cols-4">
+        <Kpi icon={<Activity />} label="Ongoing activities" value={ongoing.length} />
+        <Kpi icon={<Users />} label="Delegates off campus" value={delegatesOut} />
+        <Kpi icon={<MapPin />} label="Check-ins today" value={todayCount} />
+        <Kpi icon={<AlertTriangle />} label={`No check-in > ${STALE_HOURS}h`} value={attention.length} alert={attention.length > 0} />
       </div>
 
       {/* Filters */}
@@ -162,15 +161,15 @@ function StaffDashboard() {
           <LiveMap points={points} selectedId={selected} onSelect={setSelected} />
         </Card>
         <Card className="h-[420px] gap-2 py-4 sm:h-[540px]">
-          <CardHeader className="px-4"><CardTitle className="flex items-center gap-2 text-base"><Radio className="size-4 text-red-500" /> Live check-in feed</CardTitle></CardHeader>
+          <CardHeader className="px-4"><CardTitle className="flex items-center gap-2 text-base"><LiveDot /> Live check-ins</CardTitle></CardHeader>
           <div className="flex-1 overflow-y-auto px-2">
             <AnimatePresence initial={false}>
               {feed.map((c) => {
                 const s = db.students.find((x) => x.id === c.studentId)!;
                 return (
-                  <motion.button layout key={c.id} initial={{ opacity: 0, x: 30, backgroundColor: "rgba(99,102,241,0.25)" }} animate={{ opacity: 1, x: 0, backgroundColor: "rgba(99,102,241,0)" }} transition={{ duration: 0.8 }}
+                  <motion.button layout key={c.id} initial={{ opacity: 0, x: 20, backgroundColor: "rgba(22,163,74,0.14)" }} animate={{ opacity: 1, x: 0, backgroundColor: "rgba(22,163,74,0)" }} transition={{ duration: 0.8 }}
                     onClick={() => setSelected(c.id)}
-                    className={cn("flex w-full items-center gap-3 rounded-lg p-2 text-left hover:bg-accent", selected === c.id && "ring-1 ring-primary")}>
+                    className={cn("flex w-full items-center gap-3 rounded-lg p-2 text-left hover:bg-accent", selected === c.id && "bg-muted ring-1 ring-border")}>
                     {c.photo ? <img src={c.photo} alt="" className="size-11 shrink-0 rounded-md object-cover" /> : <Avatar name={s.name} color={collegeColor(s.college)} size={44} />}
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-semibold">{s.name} <span className="font-normal text-muted-foreground">· {s.college}</span></div>
@@ -239,17 +238,14 @@ function toPoint(c: CheckIn, s: Student, t: Trip, stale: boolean): MapPoint {
   };
 }
 
-function Kpi({ icon, label, value, tone, pulse }: { icon: React.ReactNode; label: string; value: number; tone: string; pulse?: boolean }) {
+function Kpi({ icon, label, value, alert }: { icon: React.ReactNode; label: string; value: number; alert?: boolean }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -3 }}>
-      <Card className="relative gap-1 overflow-hidden py-4">
-        <div className={`absolute -right-4 -top-4 size-20 rounded-full bg-gradient-to-br ${tone} opacity-20`} />
-        <CardContent className="px-4">
-          <div className={cn(`inline-grid size-9 place-items-center rounded-lg bg-gradient-to-br ${tone} text-white [&_svg]:size-5`, pulse && "animate-pulse")}>{icon}</div>
-          <div className="mt-2 text-3xl font-black tabular-nums"><CountUp value={value} /></div>
-          <div className="text-xs text-muted-foreground">{label}</div>
-        </CardContent>
-      </Card>
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="bg-card p-4">
+      <div className="flex items-center justify-between text-muted-foreground [&_svg]:size-4">
+        <span className="text-xs">{label}</span>
+        <span className={cn(alert && "text-warning")}>{icon}</span>
+      </div>
+      <div className={cn("mt-3 text-3xl font-semibold tabular-nums tracking-tight", alert && "text-warning")}><CountUp value={value} /></div>
     </motion.div>
   );
 }
@@ -270,22 +266,22 @@ function ActivityCard({ trip, delay, onFocus }: { trip: Trip; delay: number; onF
             <Badge variant={st === "ongoing" ? "success" : st === "upcoming" ? "warning" : "secondary"}>{st === "ongoing" ? `Day ${current} of ${total}` : st}</Badge>
             <Button variant="ghost" size="sm" onClick={onFocus}><MapPin /> Focus map</Button>
           </div>
-          <CardTitle className="text-lg">{trip.title}</CardTitle>
+          <CardTitle className="text-base tracking-tight">{trip.title}</CardTitle>
           <CardDescription>{trip.destination} · {shortDate(trip.ingress)}–{shortDate(trip.egress)}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 px-4">
           {st === "ongoing" && todayLegs.length > 0 && (
-            <div className="rounded-lg bg-muted/60 p-2 text-xs"><b>Today:</b> {todayLegs.map((l) => `${l.from} → ${l.to}`).join(" · ")}</div>
+            <div className="rounded-md border bg-muted/40 px-2.5 py-2 text-xs"><span className="font-mono uppercase tracking-wider text-muted-foreground">Today</span>  {todayLegs.map((l) => `${l.from} → ${l.to}`).join(" · ")}</div>
           )}
           <div>
             <div className="mb-1 flex justify-between text-xs"><span>Checked in today</span><span className="font-semibold">{checkedToday.size}/{trip.delegateIds.length} · {compliance}%</span></div>
-            <Progress value={compliance} indicatorClassName={compliance >= 80 ? "bg-emerald-500" : compliance >= 50 ? "bg-amber-500" : "bg-red-500"} />
+            <Progress value={compliance} className="h-1.5 bg-muted" indicatorClassName={compliance >= 80 ? "bg-success" : compliance >= 50 ? "bg-warning" : "bg-destructive"} />
           </div>
           <div className="flex flex-wrap gap-1.5">
             {trip.delegateIds.map((id) => {
               const s = db.students.find((x) => x.id === id); if (!s) return null;
               return (
-                <span key={id} className={cn("flex items-center gap-1 rounded-full border py-0.5 pl-0.5 pr-2 text-xs", !checkedToday.has(id) && st === "ongoing" && "border-amber-400 bg-amber-50 dark:bg-amber-500/10")}>
+                <span key={id} className={cn("flex items-center gap-1 rounded-full border py-0.5 pl-0.5 pr-2 text-xs", !checkedToday.has(id) && st === "ongoing" && "border-warning/50 bg-warning/10")}>
                   <Avatar name={s.name} color={collegeColor(s.college)} size={20} />{s.name.split(" ")[0]}
                 </span>
               );
@@ -323,11 +319,11 @@ function CollegeBreakdown({ rows }: { rows: Row[] }) {
             <CardContent className="space-y-3 px-4">
               <div>
                 <div className="mb-1 flex justify-between text-sm"><span>Delegates off campus</span><b>{x.delegates}</b></div>
-                <div className="h-2.5 overflow-hidden rounded-full bg-muted"><motion.div className="h-full rounded-full" style={{ background: x.c.color }} initial={{ width: 0 }} animate={{ width: `${(x.delegates / max) * 100}%` }} transition={{ duration: 0.9 }} /></div>
+                <div className="h-1.5 overflow-hidden rounded-full bg-muted"><motion.div className="h-full rounded-full" style={{ background: x.c.color }} initial={{ width: 0 }} animate={{ width: `${(x.delegates / max) * 100}%` }} transition={{ duration: 0.9 }} /></div>
               </div>
               <div className="space-y-1">
                 {x.depts.map((d) => (
-                  <div key={d.d} className="flex items-center justify-between text-xs"><span>{d.d}</span><span className="tabular-nums">{d.n}{d.stale > 0 && <span className="ml-1 text-amber-600">({d.stale} follow-up)</span>}</span></div>
+                  <div key={d.d} className="flex items-center justify-between text-xs"><span>{d.d}</span><span className="tabular-nums">{d.n}{d.stale > 0 && <span className="ml-1 text-warning">({d.stale} follow-up)</span>}</span></div>
                 ))}
               </div>
               <div className="flex flex-wrap gap-1">{x.places.map((p) => <Badge key={p} variant="secondary"><MapPin /> {p}</Badge>)}</div>

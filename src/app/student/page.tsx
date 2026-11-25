@@ -2,7 +2,7 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { formatDistanceToNow, format } from "date-fns";
-import { LogOut, Plus, Ticket, MapPin, Copy, CalendarRange, Trophy, History, Map as MapIcon, Pencil } from "lucide-react";
+import { Luggage, LogOut, Plus, Ticket, MapPin, Copy, CalendarRange, Trophy, History, Map as MapIcon, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { useStore } from "@/lib/store";
 import { Logo } from "@/components/logo";
@@ -23,6 +23,7 @@ import { CheckInDialog } from "@/components/checkin-dialog";
 import { ItineraryTimeline, Avatar } from "@/components/itinerary";
 import { BadgeGrid, CountUp, LevelRing, RewardOverlay, StreakFlame, celebrate } from "@/components/gamify";
 import { Leaderboard } from "@/components/leaderboard";
+import { LiveDot } from "@/components/live-dot";
 import type { Trip } from "@/lib/types";
 import type { Badge as GBadge } from "@/lib/gamify";
 
@@ -42,14 +43,14 @@ function Onboarding() {
   const submit = async () => {
     if (!name.trim() || !no.trim() || !college || !dept) return toast.error("Please complete all fields");
     await register({ name: name.trim(), studentNo: no.trim(), college, department: dept });
-    celebrate(); toast.success(`Welcome, ${name.split(" ")[0]}! 🎒`);
+    celebrate(); toast.success(`Welcome, ${name.split(" ")[0]}`);
   };
   return (
     <main className="mx-auto max-w-md px-4 py-8">
       <Logo />
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="mt-6">
-          <CardHeader><CardTitle className="text-2xl">Create your delegate profile</CardTitle><CardDescription>So VPSAS knows who’s out and where you’re from.</CardDescription></CardHeader>
+          <CardHeader><CardTitle className="text-xl tracking-tight">Create your delegate profile</CardTitle><CardDescription>So VPSAS knows who’s out and where you’re from.</CardDescription></CardHeader>
           <CardContent className="grid gap-3">
             <div className="grid gap-1.5"><Label>Full name</Label><Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Juan Dela Cruz" /></div>
             <div className="grid gap-1.5"><Label>Student number</Label><Input value={no} onChange={(e) => setNo(e.target.value)} placeholder="2023-00123" /></div>
@@ -65,7 +66,7 @@ function Onboarding() {
                 <SelectContent>{depts.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
               </Select>
             </div>
-            <Button size="lg" className="mt-2" onClick={submit}>Start my journey 🚀</Button>
+            <Button size="lg" className="mt-2" onClick={submit}>Continue</Button>
           </CardContent>
         </Card>
       </motion.div>
@@ -117,26 +118,26 @@ function Dashboard() {
       </header>
 
       {/* Player card */}
-      <motion.section initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-        className="relative mt-4 overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-5 text-white shadow-xl">
-        <motion.div aria-hidden className="absolute -right-10 -top-10 size-48 rounded-full bg-white/10" animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 6, repeat: Infinity }} />
-        <div className="relative flex items-center gap-4">
-          <LevelRing level={stats.level} pct={stats.into / stats.perLevel} />
-          <div className="min-w-0 flex-1">
-            <div className="text-xs uppercase tracking-widest opacity-80">{stats.title}</div>
-            <div className="truncate text-xl font-extrabold sm:text-2xl">{me.name}</div>
-            <div className="truncate text-sm opacity-85">{me.college} · {me.department} · {me.studentNo}</div>
+      <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-6">
+        <Card className="gap-0 py-0">
+          <div className="flex items-center gap-4 p-5">
+            <LevelRing level={stats.level} pct={stats.into / stats.perLevel} />
+            <div className="min-w-0 flex-1">
+              <div className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">{stats.title}</div>
+              <div className="truncate text-xl font-semibold tracking-tight">{me.name}</div>
+              <div className="truncate text-sm text-muted-foreground">{me.college} · {me.department} · <span className="font-mono">{me.studentNo}</span></div>
+            </div>
           </div>
-        </div>
-        <div className="relative mt-4">
-          <div className="mb-1 flex justify-between text-xs opacity-90"><span><CountUp value={stats.xp} /> XP</span><span>{stats.perLevel - stats.into} XP to level {stats.level + 1}</span></div>
-          <Progress value={(stats.into / stats.perLevel) * 100} className="h-2.5 bg-white/25" indicatorClassName="bg-gradient-to-r from-amber-200 to-amber-400" />
-        </div>
-        <div className="relative mt-4 grid grid-cols-3 gap-2 text-center text-sm">
-          <div className="rounded-xl bg-white/15 p-2"><StreakFlame streak={stats.streak} /></div>
-          <div className="rounded-xl bg-white/15 p-2"><b>{stats.checkins}</b> <span className="text-xs opacity-80">check-ins</span></div>
-          <div className="rounded-xl bg-white/15 p-2"><b>{stats.badges.filter((b) => b.earned).length}</b><span className="text-xs opacity-80">/{stats.badges.length} badges</span></div>
-        </div>
+          <div className="px-5 pb-5">
+            <div className="mb-1.5 flex justify-between text-xs text-muted-foreground"><span className="tabular-nums"><span className="font-medium text-foreground"><CountUp value={stats.xp} /></span> XP</span><span className="tabular-nums">{stats.perLevel - stats.into} XP to level {stats.level + 1}</span></div>
+            <Progress value={(stats.into / stats.perLevel) * 100} className="h-1.5 bg-muted" indicatorClassName="bg-success" />
+          </div>
+          <div className="grid grid-cols-3 divide-x border-t text-sm">
+            <Stat label="Day streak" value={<span className="inline-flex items-center gap-1"><StreakFlame streak={stats.streak} />{stats.streak}</span>} />
+            <Stat label="Check-ins" value={stats.checkins} />
+            <Stat label="Badges" value={<>{stats.badges.filter((b) => b.earned).length}<span className="text-muted-foreground">/{stats.badges.length}</span></>} />
+          </div>
+        </Card>
       </motion.section>
 
       {/* Active trip */}
@@ -145,12 +146,12 @@ function Dashboard() {
           <Card className="overflow-hidden py-0">
             <div className="grid gap-0 md:grid-cols-[1.1fr_1fr]">
               <div className="p-5">
-                <div className="flex items-center gap-2"><Badge variant="success"><span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" /> Ongoing</Badge>
+                <div className="flex items-center gap-2"><Badge variant="success"><LiveDot /> Ongoing</Badge>
                   <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground" onClick={() => { navigator.clipboard?.writeText(active.code); toast("Join code copied"); }}>
                     <Ticket className="size-3" /> {active.code} <Copy className="size-3" />
                   </button>
                 </div>
-                <h2 className="mt-2 text-2xl font-extrabold">{active.title}</h2>
+                <h2 className="mt-3 text-2xl font-semibold tracking-tight">{active.title}</h2>
                 <div className="flex items-center gap-1 text-sm text-muted-foreground"><MapPin className="size-4" />{active.destination} · {shortDate(active.ingress)}–{shortDate(active.egress)}</div>
                 <div className="mt-3">
                   {(() => { const { current, total } = tripDayIndex(active); return (<><div className="mb-1 text-xs text-muted-foreground">Day {current} of {total}</div><Progress value={(current / total) * 100} /></>); })()}
@@ -158,10 +159,13 @@ function Dashboard() {
                 <div className="mt-3 flex -space-x-2">
                   {active.delegateIds.map((id) => { const s = db.students.find((x) => x.id === id); return s ? <Avatar key={id} name={s.name} color={collegeColor(s.college)} /> : null; })}
                 </div>
-                <motion.div className="mt-5" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
-                  <Button size="lg" onClick={() => setCheckTrip(active)} className="relative h-14 w-full overflow-hidden bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-lg font-bold text-white shadow-lg shadow-fuchsia-500/30">
-                    <motion.span className="absolute inset-0 bg-white/20" animate={{ x: ["-100%", "100%"] }} transition={{ duration: 2.2, repeat: Infinity, ease: "linear" }} style={{ skewX: -20 }} />
-                    <MapPin className="size-6" /> Check in now
+                <motion.div className="mt-5" whileTap={{ scale: 0.98 }}>
+                  <Button size="lg" onClick={() => setCheckTrip(active)} className="h-12 w-full text-base">
+                    <span className="relative grid size-5 place-items-center">
+                      <motion.span className="absolute inset-0 rounded-full border border-primary-foreground/60" animate={{ scale: [0.6, 1.6], opacity: [0.8, 0] }} transition={{ duration: 1.6, repeat: Infinity }} />
+                      <MapPin className="size-4" />
+                    </span>
+                    Check in now
                   </Button>
                 </motion.div>
                 <div className="mt-2 text-center text-xs text-muted-foreground">
@@ -169,7 +173,7 @@ function Dashboard() {
                 </div>
               </div>
               <div className="border-t bg-muted/30 p-5 md:border-l md:border-t-0">
-                <div className="mb-3 text-sm font-semibold">Itinerary</div>
+                <div className="mb-4 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">Itinerary</div>
                 <ItineraryTimeline trip={active} checkins={myCheckins.filter((c) => c.tripId === active.id)} />
               </div>
             </div>
@@ -178,7 +182,7 @@ function Dashboard() {
       ) : (
         <Card className="mt-5 border-dashed">
           <CardContent className="flex flex-col items-center gap-3 py-6 text-center">
-            <motion.div animate={{ y: [0, -8, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="text-4xl">🧳</motion.div>
+            <motion.div animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 2.4 }} className="grid size-10 place-items-center rounded-lg border bg-muted"><Luggage className="size-5" /></motion.div>
             <div className="font-semibold">No ongoing off-campus activity</div>
             <div className="text-sm text-muted-foreground">Create a trip or join one with a code from your trip leader.</div>
           </CardContent>
@@ -226,7 +230,7 @@ function Dashboard() {
         </TabsContent>
 
         <TabsContent value="history" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {myCheckins.length === 0 && <div className="text-sm text-muted-foreground">No check-ins yet. Your first one earns the 👣 badge!</div>}
+          {myCheckins.length === 0 && <div className="text-sm text-muted-foreground">No check-ins yet. Your first one earns the First Steps badge.</div>}
           {myCheckins.map((c, i) => {
             const t = db.trips.find((x) => x.id === c.tripId);
             return (
@@ -260,5 +264,14 @@ function Dashboard() {
       {checkTrip && <CheckInDialog trip={checkTrip} open={!!checkTrip} onOpenChange={(o) => !o && setCheckTrip(null)} onReward={onReward} />}
       <RewardOverlay reward={reward} onDone={() => setReward(null)} />
     </main>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="px-4 py-3">
+      <div className="text-lg font-semibold tabular-nums">{value}</div>
+      <div className="text-xs text-muted-foreground">{label}</div>
+    </div>
   );
 }

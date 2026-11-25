@@ -5,7 +5,7 @@ import { ymd } from "./dates";
 const svgPhoto = (label: string, hue: number) =>
   "data:image/svg+xml;utf8," +
   encodeURIComponent(
-    `<svg xmlns='http://www.w3.org/2000/svg' width='480' height='320'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='hsl(${hue},70%,60%)'/><stop offset='1' stop-color='hsl(${(hue + 60) % 360},70%,40%)'/></linearGradient></defs><rect width='480' height='320' fill='url(#g)'/><circle cx='240' cy='130' r='34' fill='white' fill-opacity='.9'/><circle cx='240' cy='130' r='12' fill='hsl(${hue},70%,45%)'/><path d='M240 200 L214 150 L266 150 Z' fill='white' fill-opacity='.9'/><text x='240' y='260' font-family='sans-serif' font-size='22' fill='white' text-anchor='middle'>${label}</text><text x='240' y='290' font-family='sans-serif' font-size='13' fill='white' fill-opacity='.8' text-anchor='middle'>Sample proof photo</text></svg>`
+    `<svg xmlns='http://www.w3.org/2000/svg' width='480' height='320'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='hsl(${hue},10%,72%)'/><stop offset='1' stop-color='hsl(${hue},12%,48%)'/></linearGradient></defs><rect width='480' height='320' fill='url(#g)'/><circle cx='240' cy='130' r='34' fill='white' fill-opacity='.9'/><circle cx='240' cy='130' r='12' fill='hsl(${hue},10%,40%)'/><path d='M240 200 L214 150 L266 150 Z' fill='white' fill-opacity='.9'/><text x='240' y='260' font-family='sans-serif' font-size='22' fill='white' text-anchor='middle'>${label}</text><text x='240' y='290' font-family='sans-serif' font-size='13' fill='white' fill-opacity='.8' text-anchor='middle'>Sample proof photo</text></svg>`
   );
 
 const S = (id: string, name: string, studentNo: string, college: string, department: string): Student => ({

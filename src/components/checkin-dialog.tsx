@@ -105,8 +105,8 @@ export function CheckInDialog({ trip, open, onOpenChange, onReward }: {
         <div className="flex gap-2">
           {["Location", "Photo proof", "Submit"].map((s, i) => (
             <div key={s} className="flex-1">
-              <div className="h-1.5 rounded-full bg-muted overflow-hidden">
-                <motion.div className="h-full bg-primary" initial={{ width: 0 }} animate={{ width: i < 2 ? (steps[i] ? "100%" : "0%") : steps.every(Boolean) ? "100%" : "0%" }} />
+              <div className="h-1 rounded-full bg-muted overflow-hidden">
+                <motion.div className="h-full bg-success" initial={{ width: 0 }} animate={{ width: i < 2 ? (steps[i] ? "100%" : "0%") : steps.every(Boolean) ? "100%" : "0%" }} />
               </div>
               <div className="mt-1 text-[11px] text-muted-foreground">{s}</div>
             </div>
@@ -121,7 +121,7 @@ export function CheckInDialog({ trip, open, onOpenChange, onReward }: {
                 <motion.span key={d} className="absolute inset-0 rounded-full border-2 border-primary"
                   initial={{ scale: 0.3, opacity: 1 }} animate={{ scale: 1.4, opacity: 0 }} transition={{ duration: 1.8, delay: d, repeat: Infinity }} />
               ))}
-              <div className={`grid size-10 place-items-center rounded-full ${fix ? "bg-emerald-500" : "bg-primary"} text-white`}>
+              <div className={`grid size-10 place-items-center rounded-full ${fix ? "bg-success text-white" : "bg-primary text-primary-foreground"}`}>
                 {fix ? <Check className="size-5" /> : locating ? <Crosshair className="size-5 animate-spin" style={{ animationDuration: "3s" }} /> : <MapPin className="size-5" />}
               </div>
             </div>
@@ -167,10 +167,9 @@ export function CheckInDialog({ trip, open, onOpenChange, onReward }: {
           <div className="grid gap-1.5"><Label>Note (optional, +5 XP)</Label><Textarea value={note} onChange={(e) => setNote(e.target.value)} rows={2} placeholder="e.g. Arrived at venue, registration done" /></div>
         </div>
 
-        <Button size="lg" disabled={!fix || !photo || saving} onClick={submit}
-          className="bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white hover:opacity-90">
+        <Button size="lg" disabled={!fix || !photo || saving} onClick={submit}>
           {saving ? <Loader2 className="animate-spin" /> : <MapPin />} Check in now
-          {me && fix && photo && <span className="ml-1 rounded-full bg-white/20 px-2 text-xs">+{xpForCheckIn({ photo: "x", note: note.trim() || undefined, tripId: trip.id, studentId: me.id }, db)} XP</span>}
+          {me && fix && photo && <span className="ml-1 rounded bg-primary-foreground/15 px-1.5 font-mono text-xs">+{xpForCheckIn({ photo: "x", note: note.trim() || undefined, tripId: trip.id, studentId: me.id }, db)} XP</span>}
         </Button>
       </DialogContent>
     </Dialog>

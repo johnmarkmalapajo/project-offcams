@@ -13,7 +13,7 @@ export function LiveMap(props: MapProps) {
     <div className="relative h-full w-full">
       <Impl {...props} className="h-full w-full" />
       {!HAS_MAPBOX && (
-        <div className="absolute bottom-2 left-2 rounded-md bg-amber-100/95 px-2 py-1 text-[11px] text-amber-900 shadow">
+        <div className="absolute bottom-2 left-2 rounded-md border bg-card/95 px-2 py-1 text-[11px] text-muted-foreground shadow-sm">
           Preview basemap. Add <code>NEXT_PUBLIC_MAPBOX_TOKEN</code> to switch to Mapbox.
         </div>
       )}

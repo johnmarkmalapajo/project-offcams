@@ -38,12 +38,12 @@ export function makeMap(lib: Lib, opts: { mapStyle: string; mapboxAccessToken?: 
               <motion.button initial={{ y: -40, opacity: 0, scale: 0.4 }} animate={{ y: 0, opacity: 1, scale: p.id === selectedId ? 1.25 : 1 }}
                 transition={{ type: "spring", stiffness: 260, damping: 14, delay: Math.min(i * 0.04, 1) }}
                 whileHover={{ scale: 1.2 }} className="relative flex flex-col items-center cursor-pointer" title={p.title}>
-                <span className="relative grid size-9 place-items-center rounded-full border-2 border-white text-[11px] font-bold text-white shadow-lg"
+                <span className="relative grid size-7 place-items-center rounded-full border-2 border-white text-[10px] font-semibold text-white shadow-md"
                   style={{ background: p.color, opacity: p.stale ? 0.6 : 1 }}>
                   {!p.stale && <span className="pin-pulse absolute inset-0 rounded-full" style={{ color: p.color }} />}
                   <span className="relative">{p.initials}</span>
                 </span>
-                <span className="-mt-1 size-0 border-x-[6px] border-t-[8px] border-x-transparent" style={{ borderTopColor: p.color }} />
+                <span className="-mt-px h-2 w-0.5 rounded-full" style={{ background: p.color }} />
               </motion.button>
             </Marker>
           ))}

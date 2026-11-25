@@ -51,7 +51,7 @@ export function TripFormDialog({ open, onOpenChange, initial }: { open: boolean;
     const base = daysBetween(ing, eg).map((date, i) => ({ day: i + 1, date, legs: [{ id: uid("l_"), from: "", to: "" }] }));
     setTimeout(() => setDays(mergeLegs(base, p.legs, () => uid("l_"))), 0);
     setShowPaste(false);
-    toast.success("Itinerary imported ✨", { description: `${Object.keys(p.legs).length} day(s) of activities detected` });
+    toast.success("Itinerary imported", { description: `${Object.keys(p.legs).length} day(s) of activities detected` });
   };
 
   const setLeg = (day: number, id: string, k: "from" | "to", v: string) =>
@@ -82,7 +82,7 @@ export function TripFormDialog({ open, onOpenChange, initial }: { open: boolean;
         </DialogHeader>
 
         <div className="rounded-lg border border-dashed p-3">
-          <button type="button" className="flex w-full items-center gap-2 text-sm font-medium text-primary" onClick={() => setShowPaste((s) => !s)}>
+          <button type="button" className="flex w-full items-center gap-2 text-sm font-medium" onClick={() => setShowPaste((s) => !s)}>
             <Wand2 className="size-4" /> Paste itinerary text
           </button>
           <AnimatePresence>
@@ -105,7 +105,7 @@ export function TripFormDialog({ open, onOpenChange, initial }: { open: boolean;
         </div>
 
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-sm font-semibold"><CalendarDays className="size-4 text-primary" /> Daily activities</div>
+          <div className="flex items-center gap-2 text-sm font-semibold"><CalendarDays className="size-4" /> Daily activities</div>
           {days.map((d) => (
             <motion.div layout key={d.day} className="rounded-xl border bg-muted/40 p-3">
               <div className="mb-2 flex items-center justify-between">
