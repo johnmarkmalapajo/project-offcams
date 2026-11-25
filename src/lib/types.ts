@@ -7,6 +7,7 @@ export type Student = {
   studentNo: string;
   college: string;
   department: string;
+  pinHash?: string;
   createdAt: string;
 };
 

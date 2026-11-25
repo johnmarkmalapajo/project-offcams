@@ -71,13 +71,13 @@ class SupabaseBackend implements Backend {
     ]);
     if (s.error || t.error || c.error) throw s.error || t.error || c.error;
     return {
-      students: s.data!.map((r) => ({ id: r.id, name: r.name, studentNo: r.student_no, college: r.college, department: r.department, createdAt: r.created_at })),
+      students: s.data!.map((r) => ({ id: r.id, name: r.name, studentNo: r.student_no, college: r.college, department: r.department, pinHash: r.pin_hash ?? undefined, createdAt: r.created_at })),
       trips: t.data!.map((r) => ({ id: r.id, code: r.code, title: r.title, destination: r.destination, purpose: r.purpose ?? undefined, ingress: r.ingress, egress: r.egress, days: r.days, delegateIds: r.delegate_ids, createdBy: r.created_by, createdAt: r.created_at })),
       checkins: c.data!.map((r) => ({ id: r.id, tripId: r.trip_id, studentId: r.student_id, lat: r.lat, lng: r.lng, accuracy: r.accuracy ?? undefined, photo: r.photo_url ?? undefined, note: r.note ?? undefined, day: r.day ?? undefined, legId: r.leg_id ?? undefined, legLabel: r.leg_label ?? undefined, createdAt: r.created_at })),
     };
   }
   async saveStudent(s: Student) {
-    const { error } = await this.sb.from("students").upsert({ id: s.id, name: s.name, student_no: s.studentNo, college: s.college, department: s.department, created_at: s.createdAt });
+    const { error } = await this.sb.from("students").upsert({ id: s.id, name: s.name, student_no: s.studentNo, college: s.college, department: s.department, pin_hash: s.pinHash ?? null, created_at: s.createdAt });
     if (error) throw error;
   }
   async saveTrip(t: Trip) {

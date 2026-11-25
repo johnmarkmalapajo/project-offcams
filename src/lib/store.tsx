@@ -3,6 +3,7 @@ import * as React from "react";
 import type { CheckIn, DB, Student, Trip } from "./types";
 import { toast } from "sonner";
 import { createBackend, type Backend } from "./backend";
+import { pinHash } from "./pin";
 
 const ME_KEY = "offcams-me";
 const STAFF_KEY = "offcams-staff";
@@ -19,7 +20,8 @@ type Ctx = {
   me: Student | null;
   isStaff: boolean;
   lastEventAt: number;
-  register(s: Omit<Student, "id" | "createdAt">): Promise<Student>;
+  register(s: Omit<Student, "id" | "createdAt" | "pinHash">, pin: string): Promise<Student>;
+  signIn(studentNo: string, pin: string): Promise<Student>;
   signInAs(id: string): void;
   signOut(): void;
   saveTrip(t: Trip): Promise<void>;
@@ -65,12 +67,22 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const value: Ctx = {
     db, ready, me, isStaff, lastEventAt,
     backend: backendRef.current?.kind ?? "demo",
-    async register(s) {
-      const st: Student = { ...s, id: uid("s_"), createdAt: new Date().toISOString() };
+    async register(s, pin) {
+      const no = s.studentNo.trim().toUpperCase();
+      if (db.students.some((x) => x.studentNo.trim().toUpperCase() === no)) throw new Error("This student number is already registered. Use “Sign in” instead.");
+      const st: Student = { ...s, pinHash: await pinHash(s.studentNo, pin), id: uid("s_"), createdAt: new Date().toISOString() };
       await backendRef.current!.saveStudent(st);
       localStorage.setItem(ME_KEY, st.id);
       setMeId(st.id);
       await refresh();
+      return st;
+    },
+    async signIn(studentNo, pin) {
+      const no = studentNo.trim().toUpperCase();
+      const st = db.students.find((x) => x.studentNo.trim().toUpperCase() === no);
+      if (!st) throw new Error("No student with that number. Register first.");
+      if (!st.pinHash || st.pinHash !== (await pinHash(studentNo, pin))) throw new Error("Wrong PIN.");
+      localStorage.setItem(ME_KEY, st.id); setMeId(st.id);
       return st;
     },
     signInAs(id) { localStorage.setItem(ME_KEY, id); setMeId(id); },

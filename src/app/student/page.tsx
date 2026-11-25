@@ -34,15 +34,23 @@ export default function StudentPage() {
 }
 
 function Onboarding() {
-  const { register, db, signInAs, backend } = useStore();
+  const { register, signIn, db, signInAs, backend } = useStore();
+  const [mode, setMode] = React.useState<"new" | "signin">("new");
+  const [pin, setPin] = React.useState("");
   const [name, setName] = React.useState("");
   const [no, setNo] = React.useState("");
   const [college, setCollege] = React.useState("");
   const [dept, setDept] = React.useState("");
   const depts = COLLEGES.find((c) => c.code === college)?.departments ?? [];
   const submit = async () => {
+    if (!/^\d{4}$/.test(pin)) return toast.error("PIN must be 4 digits");
+    if (mode === "signin") {
+      try { const st = await signIn(no, pin); toast.success(`Welcome back, ${st.name.split(" ")[0]}`); }
+      catch (e) { toast.error((e as Error).message); }
+      return;
+    }
     if (!name.trim() || !no.trim() || !college || !dept.trim()) return toast.error("Please complete all fields");
-    try { await register({ name: name.trim(), studentNo: no.trim(), college, department: dept.trim() }); }
+    try { await register({ name: name.trim(), studentNo: no.trim(), college, department: dept.trim() }, pin); }
     catch (e) { return toast.error("Couldn’t save your profile", { description: (e as Error)?.message }); }
     celebrate(); toast.success(`Welcome, ${name.split(" ")[0]}`);
   };
@@ -51,10 +59,19 @@ function Onboarding() {
       <Logo />
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="mt-6">
-          <CardHeader><CardTitle className="text-xl tracking-tight">Create your delegate profile</CardTitle><CardDescription>So VPSAS knows who’s out and where you’re from.</CardDescription></CardHeader>
+          <CardHeader>
+            <Tabs value={mode} onValueChange={(v) => setMode(v as "new" | "signin")}>
+              <TabsList className="mb-3 w-full"><TabsTrigger value="new">I’m new</TabsTrigger><TabsTrigger value="signin">Sign in</TabsTrigger></TabsList>
+            </Tabs>
+            <CardTitle className="text-xl tracking-tight">{mode === "new" ? "Create your delegate profile" : "Sign in on this device"}</CardTitle>
+            <CardDescription>{mode === "new" ? "So VPSAS knows who’s out and where you’re from." : "Use the student number and PIN you registered with."}</CardDescription>
+          </CardHeader>
           <CardContent className="grid gap-3">
-            <div className="grid gap-1.5"><Label>Full name</Label><Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Juan Dela Cruz" /></div>
+            {mode === "new" && <div className="grid gap-1.5"><Label>Full name</Label><Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Juan Dela Cruz" /></div>}
             <div className="grid gap-1.5"><Label>Student number</Label><Input value={no} onChange={(e) => setNo(e.target.value)} placeholder="2023-00123" /></div>
+            <div className="grid gap-1.5"><Label>4-digit PIN</Label><Input value={pin} onChange={(e) => setPin(e.target.value.replace(/\D/g, "").slice(0, 4))} inputMode="numeric" type="password" autoComplete={mode === "new" ? "new-password" : "current-password"} placeholder="••••" className="font-mono tracking-[0.4em]" />
+              {mode === "new" && <span className="text-xs text-muted-foreground">You’ll use this to sign in on another phone.</span>}</div>
+            {mode === "new" && <>
             <div className="grid gap-1.5"><Label>College</Label>
               <Select value={college} onValueChange={(v) => { setCollege(v); setDept(""); }}>
                 <SelectTrigger><SelectValue placeholder="Select college" /></SelectTrigger>
@@ -65,7 +82,8 @@ function Onboarding() {
               <Input value={dept} onChange={(e) => setDept(e.target.value)} disabled={!college} list="dept-options" placeholder={college ? "e.g. Computer Science" : "Select a college first"} />
               <datalist id="dept-options">{depts.map((d) => <option key={d} value={d} />)}</datalist>
             </div>
-            <Button size="lg" className="mt-2" onClick={submit}>Continue</Button>
+            </>}
+            <Button size="lg" className="mt-2" onClick={submit}>{mode === "new" ? "Continue" : "Sign in"}</Button>
           </CardContent>
         </Card>
       </motion.div>

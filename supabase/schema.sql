@@ -39,3 +39,6 @@ create policy "open upload photos" on storage.objects for insert with check (buc
 grant usage on schema public to anon, authenticated;
 grant select, insert, update on students, trips to anon, authenticated;
 grant select, insert on checkins to anon, authenticated;
+
+-- Sign in from another device (student number + PIN)
+alter table students add column if not exists pin_hash text;
