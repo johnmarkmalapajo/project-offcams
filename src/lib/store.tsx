@@ -1,6 +1,7 @@
 "use client";
 import * as React from "react";
 import type { CheckIn, DB, Student, Trip } from "./types";
+import { toast } from "sonner";
 import { createBackend, type Backend } from "./backend";
 
 const ME_KEY = "offcams-me";
@@ -52,7 +53,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       setMeId(localStorage.getItem(ME_KEY));
       setIsStaff(localStorage.getItem(STAFF_KEY) === "1");
     } catch {}
-    b.load().then((d) => { setDb(d); setReady(true); }).catch((e) => { console.error(e); setReady(true); });
+    b.load().then((d) => { setDb(d); setReady(true); }).catch((e) => { console.error(e); toast.error("Couldn’t load data from the server", { description: e?.message }); setReady(true); });
     const unsub = b.subscribe(() => { setLastEventAt(Date.now()); refresh(); });
     // fallback poll so the staff map stays fresh even if realtime drops
     const iv = setInterval(refresh, 30000);

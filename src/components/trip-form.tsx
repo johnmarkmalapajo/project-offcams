@@ -67,7 +67,7 @@ export function TripFormDialog({ open, onOpenChange, initial }: { open: boolean;
     const t: Trip = initial
       ? { ...initial, title, destination, purpose, ingress, egress, days: clean }
       : { id: uid("t_"), code: joinCode(), title, destination, purpose, ingress, egress, days: clean, delegateIds: [me.id], createdBy: me.id, createdAt: new Date().toISOString() };
-    await saveTrip(t);
+    try { await saveTrip(t); } catch (e) { return toast.error("Couldn’t save the trip", { description: (e as Error)?.message }); }
     onOpenChange(false);
     if (!initial) { celebrate(); toast.success("Trip created! +30 XP", { description: `Share join code ${t.code} with your co-delegates` }); }
     else toast.success("Trip updated");

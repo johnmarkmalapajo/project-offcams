@@ -42,7 +42,8 @@ function Onboarding() {
   const depts = COLLEGES.find((c) => c.code === college)?.departments ?? [];
   const submit = async () => {
     if (!name.trim() || !no.trim() || !college || !dept) return toast.error("Please complete all fields");
-    await register({ name: name.trim(), studentNo: no.trim(), college, department: dept });
+    try { await register({ name: name.trim(), studentNo: no.trim(), college, department: dept }); }
+    catch (e) { return toast.error("Couldn’t save your profile", { description: (e as Error)?.message }); }
     celebrate(); toast.success(`Welcome, ${name.split(" ")[0]}`);
   };
   return (
